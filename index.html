@@ -16,6 +16,7 @@
   <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:url" content="https://nicholasshepherd10.github.io/Wedding-E-Card/" />
   <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#4d0e1b" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://nicholasshepherd10.github.io/Wedding-E-Card/preview.jpg" />
 
@@ -971,7 +972,10 @@
     .event.reception{position:relative}
     .event.reception:after{content:"✦  ✧  ✦  ✧  ✦";position:absolute;right:5%;top:7%;color:#c59a55aa;font-size:1.1rem;letter-spacing:1.2rem;animation:receptionSparkle 2.8s ease-in-out infinite}
     @keyframes receptionSparkle{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(8px)}}
-    @media(prefers-reduced-motion:reduce){.petal,.gold-dust,.heart,.hero-gold-sweep,.church-walkers,.walker,.event.reception:after{animation:none!important}.motion-layer{display:none!important}}
+    /* NOTE: previously this section disabled all decorative animation (petals,
+       gold dust, hearts, sweeps) when the device's "Reduce Motion" accessibility
+       setting was on. Per request, the animation now always plays regardless of
+       that setting. */
     
     /* ===== KEEP V10 SIZING + FIXES FOR SLIDER, QUOTES, SCROLL, MOBILE ===== */
     .blessings{overflow:hidden}
@@ -1344,9 +1348,7 @@
         <h3>Send Your Blessing</h3>
         <p>Write a prayer, message or wish for our new beginning.</p>
         <form id="blessingForm" class="blessing-form"><input required name="name" placeholder="Your name (max 25)"
-            maxlength="25" id="blessingNameInput">
-          <div style="text-align:right;font-size:0.7rem;color:var(--muted);margin-top:4px;"><span
-              id="blessingNameCount">0</span>/25</div><textarea required name="blessing"
+            maxlength="25" id="blessingNameInput"><textarea required name="blessing"
             placeholder="Your blessing or message (max 500 chars)" maxlength="500" id="blessingTextarea"></textarea>
           <div class="char-counter"><span id="charCount">0</span>/500 characters</div><button class="submit"
             type="submit">Send Blessing</button>
@@ -1378,7 +1380,6 @@
       <p>Kindly confirm your attendance and help us make every celebration as special as it can be.</p>
       <form id="rsvpForm">
         <input required name="name" placeholder="Your name (max 25)" maxlength="25" id="rsvpNameInput">
-        <div style="text-align:right;font-size:0.7rem;color:var(--muted);"><span id="rsvpNameCount">0</span>/25</div>
         <input required type="number" min="1" name="guests" id="rsvpGuestsInput" placeholder="Number of guests" min="1"
           max="10" placeholder="Number of guests (max 10)">
         <select required name="attendance">
@@ -1404,7 +1405,7 @@
   </section>
 
   <footer>
-    <div class="names">Prashasti &amp; Nicholas </div>
+    <div class="names">Shepherd Family </div>
     <div class="small">17 — 19 December 2026 · With love, always</div>
   </footer>
 
@@ -1701,7 +1702,7 @@
     // Lightweight particle animations generated locally so the invitation does not depend on third-party animation hosting.
     (function initWeddingMotion() {
       const layer = document.getElementById('motionLayer');
-      if (!layer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (!layer) return;
       const rand = (a, b) => Math.random() * (b - a) + a;
       const make = (cls, content = '') => {
         const e = document.createElement('span');
