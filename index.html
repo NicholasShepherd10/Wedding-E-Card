@@ -1505,17 +1505,6 @@
       } [c]))
     }
 
-
-    function esc(v) {
-      return String(v ?? '').replace(/[&<>"']/g, c => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-      } [c]))
-    }
-
     function loadBlessings() {
       const track = document.getElementById('blessingTrack');
       if (!track) return;
@@ -1796,13 +1785,23 @@
         startY = 0,
         isHoriz = null;
       track.addEventListener('touchstart', e => {
+        // If the touch starts inside the scrollable blessing text, let it
+        // scroll natively - don't arm the horizontal drag at all.
+        if (e.target.closest && e.target.closest('.blessing-text')) {
+          isDown = false;
+          isHoriz = null;
+          return;
+        }
         isDown = true;
         const t = e.touches[0];
         startX = t.pageX - track.offsetLeft;
         startY = t.pageY;
         scrollLeft = track.scrollLeft;
         isHoriz = null;
-        track.classList.add('dragging');
+        // NOTE: don't add 'dragging' class here - that sets pointer-events:none
+        // on the card and blocks vertical scrolling before we even know the
+        // gesture is horizontal. It's added only once horizontal intent is
+        // confirmed, in touchmove below.
       }, {
         passive: true
       });
@@ -1815,7 +1814,11 @@
         const walkX = x - startX;
         const walkY = y - startY;
         if (isHoriz === null) {
+          // Require a small threshold before deciding direction so tiny
+          // jitters don't get misread as a swipe.
+          if (Math.abs(walkX) < 6 && Math.abs(walkY) < 6) return;
           isHoriz = Math.abs(walkX) > Math.abs(walkY);
+          if (isHoriz) track.classList.add('dragging');
         }
         if (isHoriz) {
           e.preventDefault();
@@ -2285,8 +2288,8 @@
       'SUMMARY:'+escapeICS(eventTitle||description||'Wedding'),
       'DESCRIPTION:'+escapeICS((description||'')+'\nDress Code: '+(dressCode||'')+'\nLocation: '+(location||'')),
       'LOCATION:'+escapeICS(location||''),'STATUS:CONFIRMED','SEQUENCE:0',
-      'BEGIN:VALARM','TRIGGER:-P1D','ACTION:DISPLAY','DESCRIPTION:Reminder','END:VALARM',
-      'BEGIN:VALARM','TRIGGER:-PT2H','ACTION:DISPLAY','DESCRIPTION:Reminder','END:VALARM',
+      'BEGIN:VALARM','TRIGGER:-PT1H','ACTION:DISPLAY','DESCRIPTION:Reminder - 1 hour to go','END:VALARM',
+      'BEGIN:VALARM','TRIGGER:-PT2H','ACTION:DISPLAY','DESCRIPTION:Reminder - 2 hours to go','END:VALARM',
       'END:VEVENT','END:VCALENDAR'
     ].join('\r\n');
   }
@@ -2307,8 +2310,8 @@
         +'&details='+encodeURIComponent((description||'')+'\nDress Code: '+(dressCode||''))
         +'&location='+encodeURIComponent(location||'');
 
-      // 1. Web Share API - best for modern iOS/Android
-      if(navigator.canShare&&window.File){
+      // 1. Web Share API - best for modern iOS/Android (native share sheet, "Add to Calendar" shows up directly)
+      if(navigator.share&&navigator.canShare&&window.File){
         try{
           var file=new File([ics],fileName,{type:'text/calendar'});
           if(navigator.canShare({files:[file]})){
@@ -2317,17 +2320,20 @@
           }
         }catch(e){}
       }
-      // 2. In-app (WhatsApp/Instagram) - blob blocked, use Google Calendar
+      // 2. In-app browsers (WhatsApp/Instagram/FB) can't handle blob/data downloads reliably - use Google Calendar
       if(isInApp){
         window.open(gCalUrl,'_blank','noopener');
         return;
       }
-      // 3. iOS Safari - location.href with data URI
+      // 3. iOS Safari - navigating directly to a blob: URL (NOT a data: URI, which modern iOS Safari
+      // silently blocks for top-level navigation) makes Safari recognise the text/calendar mime type
+      // and open its native "Add to Calendar" sheet.
       if(isIOS){
         try{
-          var dataUri='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
-          window.location.href=dataUri;
-          setTimeout(function(){window.open(gCalUrl,'_blank','noopener');},1200);
+          var blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+          var url=URL.createObjectURL(blob);
+          window.location.href=url;
+          setTimeout(function(){URL.revokeObjectURL(url);},4000);
         }catch(e){
           window.open(gCalUrl,'_blank','noopener');
         }
