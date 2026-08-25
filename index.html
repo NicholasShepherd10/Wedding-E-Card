@@ -418,10 +418,14 @@
         transform:translateZ(0) !important;
         -webkit-transform:translateZ(0) !important;
       }
-      /* Body grain texture - fixed causes flicker on iOS */
+      /* Body grain texture - the SVG feTurbulence filter this uses has a known
+         WebKit/iOS rendering bug where it can tint saturated background colors
+         underneath it (this is what was causing sections like .faith to render
+         with a purple tint instead of their correct maroon). Simply hiding it
+         on iOS is the reliable fix; it's a subtle decorative touch, not worth
+         the color bug. */
       body:before{
-        position:absolute !important;
-        -webkit-transform:translateZ(0) !important;
+        display:none !important;
       }
       /* Blessing text scroll - iOS needs overflow scroll */
       .blessing-text{
