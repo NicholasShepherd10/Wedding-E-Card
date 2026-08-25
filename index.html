@@ -56,7 +56,7 @@
     
     .location{margin-top:22px;padding-top:18px;border-top:1px solid rgba(197,154,85,.25)}.location-label{font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600}.location-name{font-family:"Cormorant Garamond",serif;font-size:1.35rem;color:var(--wine);margin:6px 0 3px}.location-address{font-size:.78rem;line-height:1.55;color:var(--muted);max-width:460px}.map-btn{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:11px 15px;border:1px solid rgba(197,154,85,.55);color:var(--wine);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;transition:.3s}.map-btn:hover{background:var(--wine);color:#fff}.map-box{margin-top:14px;border:1px solid rgba(197,154,85,.3);height:150px;overflow:hidden;position:relative;background:linear-gradient(135deg,#eee6d7,#d9cbb3)}.map-box:before{position:absolute;inset:0;background:linear-gradient(25deg,transparent 45%,rgba(120,100,70,.22) 46%,rgba(120,100,70,.22) 48%,transparent 49%),linear-gradient(105deg,transparent 54%,rgba(120,100,70,.18) 55%,rgba(120,100,70,.18) 57%,transparent 58%);opacity:.8}.map-pin{position:absolute;left:50%;top:50%;transform:translate(-50%,-58%);width:27px;height:27px;border-radius:50% 50% 50% 0;background:var(--wine);rotate:-45deg;box-shadow:0 5px 14px #0003}.map-pin:after{position:absolute;width:9px;height:9px;border-radius:50%;background:#fff;left:9px;top:9px}.map-caption{position:absolute;left:12px;bottom:9px;background:#fffdf8e8;padding:6px 9px;font-size:.58rem;color:var(--wine);letter-spacing:.04em}
     .faith{padding:105px 7vw;background:radial-gradient(circle at 50% 35%,#7b2330 0,#4d0e1b 48%,#25080f 100%);color:white;text-align:center;position:relative;overflow:hidden;isolation:isolate;}
-    .faith:before{content:"✝";position:absolute;font-size:32rem;line-height:1;color:rgba(255,255,255,0.08);left:50%;top:50%;transform:translate(-50%,-48%);font-family:"Cormorant Garamond",serif;pointer-events:none;z-index:0;-webkit-transform:translate(-50%,-48%);will-change:transform;}.faith-inner{position:relative;z-index:2;isolation:isolate;}
+    .faith:before{content:"✝\FE0E";position:absolute;font-size:32rem;line-height:1;color:rgba(255,255,255,0.08);left:50%;top:50%;transform:translate(-50%,-48%);font-family:"Cormorant Garamond",serif;pointer-events:none;z-index:0;-webkit-transform:translate(-50%,-48%);will-change:transform;}.faith-inner{position:relative;z-index:2;isolation:isolate;}
     .faith h2{font-size:clamp(2rem,5.5vw,4.2rem);max-width:900px;margin:20px auto 16px;line-height:1.2;position:relative;z-index:2;text-shadow:0 2px 12px rgba(0,0,0,0.3);}
     .faith p{color:#e6d7c5;max-width:650px;margin:auto;line-height:1.8;position:relative;z-index:2;}
     .verse-ref{position:relative;z-index:2;color:#c59a55;margin-top:18px;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;}
@@ -293,7 +293,7 @@
     #celebrations .location-label{
       color:#4d0e1b !important;
       font-weight:800 !important;
-      font-size:0.62rem !important;
+      font-size:0.82rem !important;
       letter-spacing:0.18em !important;
       background:rgba(77,14,27,0.08) !important;
       padding:4px 10px !important;
@@ -305,7 +305,7 @@
     #celebrations .location-name{
       color:#241a18 !important;
       font-weight:700 !important;
-      font-size:1.05rem !important;
+      font-size:1.70rem !important;
     }
     #celebrations .location-address{
       color:#4a3f38 !important;
@@ -505,6 +505,10 @@
         color:rgba(255,255,255,0.05) !important;
         opacity:0.6 !important;
         z-index:0 !important;
+        will-change:auto !important;
+      }
+      .faith{
+        isolation:auto !important;
       }
       .faith .faith-inner{
         z-index:2 !important;
@@ -1251,7 +1255,7 @@
 
     <article class="event matrimony reveal">
       <div class="copy">
-        <span class="tag">19 December · Sacred Ceremony</span>
+        <span class="tag">19 December · Church Wedding</span>
         <h3>Holy Matrimony</h3>
         <div class="time">Church Wedding · 4:00 PM</div>
         <div class="countdown-title">Countdown</div>
