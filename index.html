@@ -1151,9 +1151,11 @@
           </div>
         </div>
         <div class="calendar-actions">
-          <button class="calendar-btn" type="button"
-            onclick="addToCalendarICS('Cocktail Evening', '20261217T200000', '20261217T233000', 'Bellanta Hotel, Rajokri, New Delhi', 'Prashasti & Nicholas - Cocktail Evening', 'Traditional / Sufi - Black Preferred')">📥
-            Add to Calendar with Reminder</button>
+          <a class="calendar-btn" href="#" data-ics-title="Cocktail Evening" data-ics-start="20261217T200000"
+            data-ics-end="20261217T233000" data-ics-location="Bellanta Hotel, Rajokri, New Delhi"
+            data-ics-desc="Prashasti &amp; Nicholas - Cocktail Evening"
+            data-ics-dress="Traditional / Sufi - Black Preferred">📥
+            Add to Calendar with Reminder</a>
         </div>
       </div>
       </div>
@@ -1190,9 +1192,10 @@
           </div>
         </div>
         <div class="calendar-actions">
-          <button class="calendar-btn" type="button"
-            onclick="addToCalendarICS('Haldi', '20261218T140000', '20261218T160000', 'Bellanta Hotel, Rajokri, New Delhi', 'Prashasti & Nicholas - Haldi', 'Yellow or Ethnic Wear')">📥
-            Add to Calendar with Reminder</button>
+          <a class="calendar-btn" href="#" data-ics-title="Haldi" data-ics-start="20261218T140000"
+            data-ics-end="20261218T160000" data-ics-location="Bellanta Hotel, Rajokri, New Delhi"
+            data-ics-desc="Prashasti &amp; Nicholas - Haldi" data-ics-dress="Yellow or Ethnic Wear">📥
+            Add to Calendar with Reminder</a>
         </div>
       </div>
       </div>
@@ -1229,9 +1232,10 @@
           </div>
         </div>
         <div class="calendar-actions">
-          <button class="calendar-btn" type="button"
-            onclick="addToCalendarICS('Mehendi', '20261218T170000', '20261218T200000', 'Bellanta Hotel, Rajokri, New Delhi', 'Prashasti & Nicholas - Mehendi', 'Ethnic Wear - Green Preferred')">📥
-            Add to Calendar with Reminder</button>
+          <a class="calendar-btn" href="#" data-ics-title="Mehendi" data-ics-start="20261218T170000"
+            data-ics-end="20261218T200000" data-ics-location="Bellanta Hotel, Rajokri, New Delhi"
+            data-ics-desc="Prashasti &amp; Nicholas - Mehendi" data-ics-dress="Ethnic Wear - Green Preferred">📥
+            Add to Calendar with Reminder</a>
         </div>
       </div>
       </div>
@@ -1265,9 +1269,10 @@
             </div>
           </div>
           <div class="calendar-actions">
-            <button class="calendar-btn" type="button"
-              onclick="addToCalendarICS('Holy Matrimony', '20261219T160000', '20261219T180000', 'Centenary Methodist Church, Lodhi Road, New Delhi', 'Prashasti & Nicholas - Holy Matrimony', 'Tux and Dress')">📥
-              Add to Calendar with Reminder</button>
+            <a class="calendar-btn" href="#" data-ics-title="Holy Matrimony" data-ics-start="20261219T160000"
+              data-ics-end="20261219T180000" data-ics-location="Centenary Methodist Church, Lodhi Road, New Delhi"
+              data-ics-desc="Prashasti &amp; Nicholas - Holy Matrimony" data-ics-dress="Tux and Dress">📥
+              Add to Calendar with Reminder</a>
           </div>
 
         </div>
@@ -1303,9 +1308,10 @@
             </div>
           </div>
           <div class="calendar-actions">
-            <button class="calendar-btn" type="button"
-              onclick="addToCalendarICS('The Reception', '20261219T200000', '20261220T000000', 'Bel-La Monde Hotel, Rangpuri, New Delhi', 'Prashasti & Nicholas - Wedding Reception', 'Wedding Ethnics')">📥
-              Add to Calendar with Reminder</button>
+            <a class="calendar-btn" href="#" data-ics-title="The Reception" data-ics-start="20261219T200000"
+              data-ics-end="20261220T000000" data-ics-location="Bel-La Monde Hotel, Rangpuri, New Delhi"
+              data-ics-desc="Prashasti &amp; Nicholas - Wedding Reception" data-ics-dress="Wedding Ethnics">📥
+              Add to Calendar with Reminder</a>
           </div>
 
         </div>
@@ -2256,7 +2262,11 @@
 
 
 <script>
-// === FINAL VERIFIED PATCH - Android + iOS + GitHub Pages - Display unchanged ===
+// === "Add to Calendar with Reminder" ===
+// Real <a> links with a Blob URL + download attribute. This is the standard,
+// most broadly compatible way to trigger a file download/"Add to Calendar"
+// prompt from a genuine click, and works the same whether this page is opened
+// by double-clicking the .html file, from a local server, or hosted online.
 (function() {
   function escapeICS(t){return (t||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');}
   function toUTCFormat(d){return d.toISOString().replace(/[-:]/g,'').replace(/\.\d+Z/,'Z');}
@@ -2293,81 +2303,58 @@
       'END:VEVENT','END:VCALENDAR'
     ].join('\r\n');
   }
-  window.addToCalendarUniversal = function(eventTitle,startStr,endStr,location,description,dressCode){
-    try{
-      var ua=navigator.userAgent||'';
-      var isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-      var isInApp=/FBAN|FBAV|FB_IAB|Instagram|WhatsApp|Line|Twitter|Snapchat/i.test(ua);
-      var startDate=parseDateAny(startStr);
-      var endDate=parseDateAny(endStr);
-      if(isNaN(startDate.getTime())){alert('Invalid date: '+startStr);return;}
-      if(isNaN(endDate.getTime())||endDate<=startDate){endDate=new Date(startDate.getTime()+2*60*60*1000);}
-      var ics=buildICS(eventTitle,startDate,endDate,location,description,dressCode);
-      var fileName=(eventTitle||'event').replace(/[^a-z0-9]/gi,'_')+'.ics';
-      var gCalUrl='https://calendar.google.com/calendar/render?action=TEMPLATE'
-        +'&text='+encodeURIComponent(eventTitle||description||'Wedding')
-        +'&dates='+toUTCFormat(startDate)+'/'+toUTCFormat(endDate)
-        +'&details='+encodeURIComponent((description||'')+'\nDress Code: '+(dressCode||''))
-        +'&location='+encodeURIComponent(location||'');
+  function gCalUrlFor(eventTitle,startDate,endDate,location,description,dressCode){
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+      +'&text='+encodeURIComponent(eventTitle||description||'Wedding')
+      +'&dates='+toUTCFormat(startDate)+'/'+toUTCFormat(endDate)
+      +'&details='+encodeURIComponent((description||'')+'\nDress Code: '+(dressCode||''))
+      +'&location='+encodeURIComponent(location||'');
+  }
 
-      // 1. Web Share API - best for modern iOS/Android (native share sheet, "Add to Calendar" shows up directly)
-      if(navigator.share&&navigator.canShare&&window.File){
-        try{
-          var file=new File([ics],fileName,{type:'text/calendar'});
-          if(navigator.canShare({files:[file]})){
-            navigator.share({files:[file],title:eventTitle,text:description}).catch(function(){});
-            return;
-          }
-        }catch(e){}
-      }
-      // 2. In-app browsers (WhatsApp/Instagram/FB) can't handle blob/data downloads reliably - use Google Calendar
-      if(isInApp){
-        window.open(gCalUrl,'_blank','noopener');
-        return;
-      }
-      // 3. iOS Safari - navigating directly to a blob: URL (NOT a data: URI, which modern iOS Safari
-      // silently blocks for top-level navigation) makes Safari recognise the text/calendar mime type
-      // and open its native "Add to Calendar" sheet.
-      if(isIOS){
-        try{
-          var blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
-          var url=URL.createObjectURL(blob);
-          window.location.href=url;
-          setTimeout(function(){URL.revokeObjectURL(url);},4000);
-        }catch(e){
-          window.open(gCalUrl,'_blank','noopener');
-        }
-        return;
-      }
-      // 4. Android & Desktop - Blob download
-      try{
-        var blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
-        var url=URL.createObjectURL(blob);
-        var a=document.createElement('a');
-        a.href=url;a.download=fileName;a.style.display='none';
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function(){try{document.body.removeChild(a);}catch(e){}URL.revokeObjectURL(url);},2000);
-      }catch(e){
-        window.open(gCalUrl,'_blank','noopener');
-      }
-    }catch(err){
-      console.error(err);
-      window.open('https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(description||eventTitle||'Wedding'),'_blank','noopener');
+  function wireLink(a){
+    var eventTitle = a.getAttribute('data-ics-title') || 'Wedding';
+    var location = a.getAttribute('data-ics-location') || '';
+    var description = a.getAttribute('data-ics-desc') || '';
+    var dressCode = a.getAttribute('data-ics-dress') || '';
+    var startDate = parseDateAny(a.getAttribute('data-ics-start'));
+    var endDate = parseDateAny(a.getAttribute('data-ics-end'));
+    if(isNaN(endDate.getTime())||endDate<=startDate){ endDate = new Date(startDate.getTime()+2*60*60*1000); }
+
+    var ics = buildICS(eventTitle,startDate,endDate,location,description,dressCode);
+    var fileName = eventTitle.replace(/[^a-z0-9]/gi,'_')+'.ics';
+    var gCalUrl = gCalUrlFor(eventTitle,startDate,endDate,location,description,dressCode);
+
+    var ua = navigator.userAgent||'';
+    var isInApp = /FBAN|FBAV|FB_IAB|Instagram|WhatsApp|Line|Twitter|Snapchat/i.test(ua);
+    if(isInApp){
+      // In-app browsers (WhatsApp/Instagram/FB) can't reliably handle file
+      // downloads - point straight at Google Calendar instead.
+      a.href = gCalUrl;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      return;
     }
-  };
-  window.addToCalendarICS=window.addToCalendarUniversal;
-  // Also attach event listeners to all calendar buttons for better mobile tap handling
-  document.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('.calendar-btn').forEach(function(btn){
-      btn.addEventListener('touchend', function(e){
-        // Prevent double trigger on touch devices
-        e.preventDefault();
-        btn.click();
-      }, {passive:false});
-    });
-  });
-  console.log('✅ Calendar ready - Android+iOS+GitHub Pages');
+
+    try{
+      var blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
+      a.href = URL.createObjectURL(blob);
+      a.setAttribute('download', fileName);
+    }catch(err){
+      a.href = gCalUrl;
+      a.target = '_blank';
+      a.rel = 'noopener';
+    }
+  }
+
+  function setup(){
+    document.querySelectorAll('.calendar-btn[data-ics-title]').forEach(wireLink);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', setup);
+  } else {
+    setup();
+  }
 })();
 </script>
 
